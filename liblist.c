@@ -5,12 +5,13 @@
 #include <threads.h>
 
 Node *create_node(void) {
-    Node *temcurrent = malloc(sizeof(Node));
-    if (temcurrent == NULL) {
+    Node *node = malloc(sizeof(Node));
+    if (node == NULL) {
         return NULL;
     }
-    temcurrent->next = NULL;
-    return temcurrent;
+    node->next = NULL;
+    node->data = 0;
+    return node;
 }
 
 /*
@@ -37,21 +38,22 @@ Node *add_node(Node *head, int value) {
     return head;
 }
 
-Node *search(Node *head, int value) {
+const Node *search(const Node *head, int value) {
     if (head == NULL) {
         return NULL;
     }
 
-    Node *current = head;
+    const Node *current = head;
     while (current != NULL) {
         if (current->data == value) {
             return current;
         }
         current = current->next;
     }
-    return current;
+    return NULL;
 }
 
+// deletes all nodes with this value
 Node *delete_node(Node *head, int value) {
     Node *current = head;
     Node *prev = NULL; /* only the head's currentrev can be null */
@@ -75,7 +77,7 @@ Node *delete_node(Node *head, int value) {
     return head;
 }
 
-void print_list(Node *head) {
+void print_list(const Node *head) {
     int idx = 0;
     while (head != NULL) {
         printf("%d, %d, %p, %p\n", idx, head->data, (void *)head, (void *)head->next);
@@ -84,7 +86,7 @@ void print_list(Node *head) {
     }
 }
 
-int get_length(Node *head) {
+int get_length(const Node *head) {
     int idx = 0;
     while (head != NULL) {
         head = head->next;

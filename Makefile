@@ -1,15 +1,16 @@
 CC = gcc
-CFLAGS = -Wall -g -std=c11 -pedantic
+CFLAGS = -Wall -Wextra -g -std=c11 -pedantic
+LDFLAGS =
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 TARGET = program
 
-.PHONY: all clean debug release
+.PHONY: all clean debug release test
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -22,4 +23,8 @@ debug: all
 
 release: CFLAGS += -O2
 release: all
+
+test: $(TARGET)
+	./$(TARGET)
+
 
