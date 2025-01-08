@@ -7,5 +7,11 @@ typedef struct Node {
 } Node;
 
 Node *create_node(void);
+Node *add_node(Node *head, int value);
+Node *search(Node *head, int value);
+Node *delete_node(Node *head, int value);
+void free_list(Node *head);
+void print_list(Node *head);
+int get_length(Node *head);
 
 #endif // LIBLIST_H
