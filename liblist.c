@@ -1,14 +1,16 @@
 #include "liblist.h"
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <threads.h>
 
 Node *create_node(void) {
-  Node *temp = malloc(sizeof(Node));
-  if (temp == NULL) {
-    return NULL;
-  }
-  temp->next = NULL;
-  return temp;
+    Node *temcurrent = malloc(sizeof(Node));
+    if (temcurrent == NULL) {
+        return NULL;
+    }
+    temcurrent->next = NULL;
+    return temcurrent;
 }
 
 /*
@@ -17,60 +19,84 @@ Node *create_node(void) {
  * If head is not NULL, add a new node to the end of the list
  */
 Node *add_node(Node *head, int value) {
-  Node *end = create_node();
-  if (end == NULL) {
-    return NULL;
-  }
-  end->data = value;
+    Node *end = create_node();
+    if (end == NULL) {
+        return NULL;
+    }
+    end->data = value;
 
-  if (head == NULL) {
-    return end;
-  }
+    if (head == NULL) {
+        return end;
+    }
 
-  Node *p = head;
-  while (p->next != NULL) {
-    p = p->next;
-  }
-  p->next = end;
-  return head;
+    Node *current = head;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = end;
+    return head;
 }
 
 Node *search(Node *head, int value) {
-  if (head == NULL) {
-    return NULL;
-  }
-
-  Node *p = head;
-  while (p != NULL) {
-    if (p->data == value) {
-      return p;
+    if (head == NULL) {
+        return NULL;
     }
-    p = p->next;
-  }
-  return p;
+
+    Node *current = head;
+    while (current != NULL) {
+        if (current->data == value) {
+            return current;
+        }
+        current = current->next;
+    }
+    return current;
 }
 
 Node *delete_node(Node *head, int value) {
-  if (head == NULL) {
-    return NULL;
-  }
+    Node *current = head;
+    Node *prev = NULL; /* only the head's currentrev can be null */
 
-  Node *p = head;
-  Node *prev = NULL; /* only the head's prev can be null */
-  while (p->next != NULL || prev == NULL) {
-    if (p->data == value) {
-      if (prev == NULL) {
-        Node *temp = p;
-        head = p->next;
-        free(temp);
-      } else {
-        Node *temp = p;
-        prev->next = p->next;
-        free(temp);
-      }
+    while (current != NULL) {
+        if (current->data == value) {
+            Node *temp = current;
+            if (prev == NULL) {
+                head = current->next;
+            } else {
+                prev->next = current->next;
+            }
+            current = current->next;
+            free(temp);
+        } else {
+            prev = current;
+            current = current->next;
+        }
     }
-    prev = p;
-    p = p->next;
-  }
-  return head;
+
+    return head;
+}
+
+void print_list(Node *head) {
+    int idx = 0;
+    while (head != NULL) {
+        printf("%d, %d, %p, %p\n", idx, head->data, (void *)head, (void *)head->next);
+        head = head->next;
+        ++idx;
+    }
+}
+
+int get_length(Node *head) {
+    int idx = 0;
+    while (head != NULL) {
+        head = head->next;
+        ++idx;
+    }
+    return idx;
+}
+
+void free_list(Node *head) {
+    while (head != NULL) {
+        Node *temp = head;
+        head = head->next;
+        free(temp);
+    }
 }
